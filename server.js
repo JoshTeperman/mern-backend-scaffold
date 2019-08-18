@@ -1,9 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const app = express()
+const app = new express()
 require('dotenv').config()
 
-const PORT: process.env.PORT || 5000
+const PORT = process.env.PORT || 5000
 
 mongoose.connect(process.env.DB_URL, { 
   useNewUrlParser: true,
@@ -13,10 +13,14 @@ mongoose.connect(process.env.DB_URL, {
   if (err) {
     console.log('👺  Error connecting to MongoDB');
   } else {
-    console.log('✅  Connected to MongoDB');
+    console.log('✅   Connected to MongoDB');
   }
+})
+
+app.get('/test', (req, res) => {
+  res.json({ message: 'server is working' })
 })
 
 app.use(require('./routes'))
 
-app.listen(config.PORT, () => console.log(`listening on PORT ${config.PORT}`))
+app.listen(PORT, () => console.log(`⚡️  listening on PORT ${PORT}`))
