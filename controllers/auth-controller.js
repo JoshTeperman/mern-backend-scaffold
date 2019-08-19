@@ -36,9 +36,32 @@ const login = async (req, res) => {
       error: { message: 'Could not authenticate user', status: 403 }
     })  }
 }
+
 const register = async (req, res) => {
-  
+  const { email, password } = req.body
+  if (email && password) {
+    try {
+      const foundUser = await User.findOne({ email: email })
+      if (foundUser) {
+        return res.json({ 
+          error: { message: 'User already exists', status: 400 }
+        })      
+      } else if (foundUser === null) {
+        const newUser = await generateUser(email, password)
+        const token = await generateToken(newUser)
+        return res.send({ token })
+      }
+    } catch(err) {
+      console.log(err.stack);
+      return res.json({ 
+        error: { message: 'an error occured', status: 404 }
+      })      }
+  } else {
+    return res.json({ 
+      error: { message: 'could not authenticate user', status: 403 }
+    })  }
 }
+
 module.exports = {
   login,
   register
